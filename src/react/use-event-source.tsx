@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 
 type EventSourceOptions = {
+  /** EventSource constructor options */
   init?: EventSourceInit;
+  /** The event to listen to */
   event?: string;
+  /** enable or disable the event source */
+  enabled?: boolean;
 };
 
 /**
@@ -13,11 +17,13 @@ type EventSourceOptions = {
  */
 export function useEventSource(
   url: string | URL,
-  { event = "message", init }: EventSourceOptions = {}
+  { event = "message", init, enabled = true }: EventSourceOptions = {}
 ) {
   const [data, setData] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
+    
     const eventSource = new EventSource(url, init);
     eventSource.addEventListener(event ?? "message", handler);
 
